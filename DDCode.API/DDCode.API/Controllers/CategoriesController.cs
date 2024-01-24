@@ -1,6 +1,7 @@
 ﻿using DDCode.API.Data;
 using DDCode.API.Models.Domain;
 using DDCode.API.Models.DTO;
+using DDCode.API.Repositories.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,14 +10,9 @@ namespace DDCode.API.Controllers
     //https://localhost:xxxx/api/Categories
     [Route("api/[controller]")]
     [ApiController]
-    public class CategoriesController : ControllerBase
+    public class CategoriesController(ICategoryRepository categoryRepository) : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
-
-        public CategoriesController(ApplicationDbContext context)
-        {
-            _context = context;
-        }
+        private readonly ICategoryRepository _categoryRepository = categoryRepository;
 
         // POST: api/Categories
         [HttpPost]
@@ -30,19 +26,17 @@ namespace DDCode.API.Controllers
                 Name = request.Name,
                 UrlHandle = request.UrlHandle
             };
-            //TODO: create repository for categories
             //TODO:handle exceptions
-            await _context.Categories.AddAsync(category);
-            await _context.SaveChangesAsync();
+            
+            await _categoryRepository.CreateAsync(category);
 
-            //Map Domain Model to DTO
             var response = new CategoryDTO
             {
                 Id = category.Id,
                 Name = category.Name,
                 UrlHandle = category.UrlHandle
-            };
-
+            };  
+           
             return Ok(response);
         }
     }
