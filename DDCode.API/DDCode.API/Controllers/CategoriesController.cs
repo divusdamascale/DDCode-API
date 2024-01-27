@@ -106,5 +106,29 @@ namespace DDCode.API.Controllers
 
             return Ok(response);
         }
+
+        //DELETE: /api/Categories/{id}
+        [HttpDelete]
+        [Route("{categoryId:Guid}")]
+        public async Task<IActionResult> DeleteCategory([FromRoute] Guid categoryId)
+        {
+            var category = await _categoryRepository.GetByIdAsync(categoryId);
+
+            if(category is null)
+            {
+                return NotFound();
+            }
+
+            await _categoryRepository.DeleteAsync(category);
+
+            var response = new CategoryDTO
+            {
+                Id = category.Id,
+                Name = category.Name,
+                UrlHandle = category.UrlHandle
+            };
+
+            return Ok(response);
+        }
     }
 }

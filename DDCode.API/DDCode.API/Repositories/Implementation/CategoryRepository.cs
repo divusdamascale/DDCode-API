@@ -16,6 +16,14 @@ namespace DDCode.API.Repositories.Implementation
             return category;
         }
 
+        public async Task<Category?> DeleteAsync(Category category)
+        {
+            _context.Categories.Remove(category);
+            await _context.SaveChangesAsync();
+            return category;
+
+        }
+
         public async Task<IEnumerable<Category>> GetAllAsync()
         {
             return await _context.Categories.ToListAsync();

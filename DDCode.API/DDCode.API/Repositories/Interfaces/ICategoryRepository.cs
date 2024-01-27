@@ -8,5 +8,6 @@ namespace DDCode.API.Repositories.Interfaces
         Task<IEnumerable<Category>> GetAllAsync();
         Task<Category?> GetByIdAsync(Guid catgegoryId);
         Task<Category?> UpdateAsync(Category category);
+        Task<Category?> DeleteAsync(Category category);
     }
 }
