@@ -43,5 +43,33 @@ namespace DDCode.API.Controllers
 
             return Ok(response);
         }
+        //GET: /api/blogposts
+        [HttpGet]
+        public async Task<IActionResult> GetAllBlogPosts()
+        {
+            var blogposts = await _blogpostRepository.GetAllAsync();
+
+            var response = new List<BlogPostDTO>();
+
+            foreach(var blogpost in blogposts)
+            {
+                response.Add(
+                                       new BlogPostDTO
+                                       {
+                        Id = blogpost.Id,
+                        Author = blogpost.Author,
+                        Content = blogpost.Content,
+                        FeaturedImageUrl = blogpost.FeaturedImageUrl,
+                        IsVisible = blogpost.IsVisible,
+                        PublishedDate = blogpost.PublishedDate,
+                        ShortDescription = blogpost.ShortDescription,
+                        Title = blogpost.Title,
+                        UrlHandle = blogpost.UrlHandle,
+                    }
+                                                      );
+            }
+
+            return Ok(response);
+        }
     }
 }

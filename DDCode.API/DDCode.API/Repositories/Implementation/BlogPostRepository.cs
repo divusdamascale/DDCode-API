@@ -1,6 +1,7 @@
 ﻿using DDCode.API.Data;
 using DDCode.API.Models.Domain;
 using DDCode.API.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System.Runtime.CompilerServices;
 
 namespace DDCode.API.Repositories.Implementation
@@ -20,9 +21,9 @@ namespace DDCode.API.Repositories.Implementation
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<BlogPost>> GetAllAsync()
+        public async Task<IEnumerable<BlogPost>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await _context.BlogPosts.ToListAsync();
         }
 
         public Task<BlogPost> GetAsync(int id)
