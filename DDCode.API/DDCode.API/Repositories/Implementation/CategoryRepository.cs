@@ -5,9 +5,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DDCode.API.Repositories.Implementation
 {
-    public class CategoryRepository(ApplicationDbContext context) : ICategoryRepository
+    public class CategoryRepository(ApplicationDbContext _context) : ICategoryRepository
     {
-        public readonly ApplicationDbContext _context = context;
+        
 
         public async Task<Category> CreateAsync(Category category)
         {

@@ -10,9 +10,9 @@ namespace DDCode.API.Controllers
     //https://localhost:xxxx/api/Categories
     [Route("api/[controller]")]
     [ApiController]
-    public class CategoriesController(ICategoryRepository categoryRepository) : ControllerBase
+    public class CategoriesController(ICategoryRepository _categoryRepository) : ControllerBase
     {
-        private readonly ICategoryRepository _categoryRepository = categoryRepository;
+        
 
         // POST: api/Categories
         [HttpPost]
