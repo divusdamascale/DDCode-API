@@ -3,13 +3,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DDCode.API.Data
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext(DbContextOptions options) : DbContext(options)
     {
-        public ApplicationDbContext(DbContextOptions options) : base(options)
-        {
-        }
-
         public DbSet<BlogPost> BlogPosts { get; set; }
         public DbSet<Category> Categories { get; set; }
+        public DbSet<BlogImage> BlogImages { get; set; }
     }
 }
