@@ -186,5 +186,22 @@ namespace DDCode.API.Controllers
             return Ok(response);
         }
 
+        //DELETE: /api/blogposts/{id}
+        [HttpDelete]
+        [Route("{blogId:guid}")]
+        public async Task<IActionResult> DeleteBlogPost([FromRoute]Guid blogId)
+        {
+            var blogpost = await _blogpostRepository.GetAsync(blogId);
+
+            if (blogpost is null)
+            {
+                return NotFound();
+            }
+
+            await _blogpostRepository.DeleteAsync(blogpost);
+
+            return Ok();
+        }
+
     }
 }
