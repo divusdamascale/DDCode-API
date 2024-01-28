@@ -31,9 +31,11 @@ namespace DDCode.API.Repositories.Implementation
             return await _context.BlogPosts.Include(x => x.Categories).FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public Task<BlogPost> UpdateAsync(BlogPost blogPost)
+        public async Task<BlogPost> UpdateAsync(BlogPost blogPost)
         {
-            throw new NotImplementedException();
+            _context.BlogPosts.Update(blogPost);
+            await _context.SaveChangesAsync();
+            return blogPost;
         }
     }
 }

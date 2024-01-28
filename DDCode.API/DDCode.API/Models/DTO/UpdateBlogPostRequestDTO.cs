@@ -1,8 +1,7 @@
 ﻿namespace DDCode.API.Models.DTO
 {
-    public class BlogPostDTO
+    public class UpdateBlogPostRequestDTO
     {
-        public Guid Id { get; set; }
         public string Title { get; set; } = string.Empty;
         public string ShortDescription { get; set; } = string.Empty;
         public string Content { get; set; } = string.Empty;
@@ -11,6 +10,6 @@
         public DateTime PublishedDate { get; set; }
         public string Author { get; set; } = string.Empty;
         public bool IsVisible { get; set; }
-        public List<CategoryDTO> Categories { get; set; } = [];
+        public List<Guid> Categories { get; set; } = [];
     }
 }
