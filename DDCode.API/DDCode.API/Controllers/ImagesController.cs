@@ -46,6 +46,23 @@ namespace DDCode.API.Controllers
             return BadRequest();
         }
 
+        //GET : /api/Images
+        [HttpGet]
+        public async Task<IActionResult> GetImages()
+        {
+            var images = await imageRepository.GetImages();
+            var response = images.Select(i => new BlogImageDTO
+            {
+                Url = i.Url,
+                Title = i.Title,
+                DateCreated = i.DateCreated,
+                FileExtension = i.FileExtension,
+                FileName = i.FileName,
+                Id = i.Id
+            });
+            return Ok(response);
+        }
+
         private void ValidateFileUpload(IFormFile file)
         {
             //todo: array in appsettings

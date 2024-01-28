@@ -5,5 +5,6 @@ namespace DDCode.API.Repositories.Interfaces
     public interface IImageRepository
     {
         Task<BlogImage> Upload(IFormFile file,BlogImage image);
+        Task<IEnumerable<BlogImage>> GetImages();
     }
 }
