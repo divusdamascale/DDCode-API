@@ -2,13 +2,11 @@
 using DDCode.API.Models.Domain;
 using DDCode.API.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System.Runtime.CompilerServices;
 
 namespace DDCode.API.Repositories.Implementation
 {
     public class BlogPostRepository(ApplicationDbContext _context) : IBlogPostRepository
     {
-        
         public async Task<BlogPost> CreateAsync(BlogPost blogPost)
         {
             await _context.BlogPosts.AddAsync(blogPost);
@@ -23,7 +21,7 @@ namespace DDCode.API.Repositories.Implementation
 
         public async Task<IEnumerable<BlogPost>> GetAllAsync()
         {
-            return await _context.BlogPosts.ToListAsync();
+            return await _context.BlogPosts.Include(x => x.Categories).ToListAsync();
         }
 
         public Task<BlogPost> GetAsync(int id)

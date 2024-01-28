@@ -82,6 +82,12 @@ namespace DDCode.API.Controllers
                         ShortDescription = blogpost.ShortDescription,
                         Title = blogpost.Title,
                         UrlHandle = blogpost.UrlHandle,
+                        Categories = blogpost.Categories.Select(x => new CategoryDTO
+                        {
+                            Id = x.Id,
+                            Name = x.Name,
+                            UrlHandle = x.UrlHandle
+                        }).ToList()
 
                     }
                 );
