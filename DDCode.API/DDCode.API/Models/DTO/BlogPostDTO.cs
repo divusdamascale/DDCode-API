@@ -11,5 +11,6 @@
         public DateTime PublishedDate { get; set; }
         public string Author { get; set; } = string.Empty;
         public bool IsVisible { get; set; }
+        public List<CategoryDTO> Categories { get; set; } = new List<CategoryDTO>();
     }
 }

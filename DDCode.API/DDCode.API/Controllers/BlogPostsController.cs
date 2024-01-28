@@ -8,9 +8,8 @@ namespace DDCode.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BlogPostsController(IBlogPostRepository _blogpostRepository) : ControllerBase
+    public class BlogPostsController(IBlogPostRepository _blogpostRepository,ICategoryRepository _categoryRepository) : ControllerBase
     {
-        
         //POST : api/blogposts
         [HttpPost]
         public async Task<IActionResult> CreateBlogPost([FromBody] CreateBlogPostRequestDTO request)
@@ -25,7 +24,18 @@ namespace DDCode.API.Controllers
                 ShortDescription = request.ShortDescription,
                 Title = request.Title,
                 UrlHandle = request.UrlHandle,
+                Categories = new List<Category>()
             };
+
+            foreach (var categoryId in request.Categories)
+            {
+                var category = await _categoryRepository.GetByIdAsync(categoryId);
+                if (category is not null)
+                {
+                    blogpost.Categories.Add(category);
+                }
+            }
+
             await _blogpostRepository.CreateAsync(blogpost);
 
             var response = new BlogPostDTO
@@ -39,10 +49,17 @@ namespace DDCode.API.Controllers
                 ShortDescription = blogpost.ShortDescription,
                 Title = blogpost.Title,
                 UrlHandle = blogpost.UrlHandle,
+                Categories = blogpost.Categories.Select(x => new CategoryDTO
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    UrlHandle = x.UrlHandle
+                }).ToList()
             };
 
             return Ok(response);
         }
+
         //GET: /api/blogposts
         [HttpGet]
         public async Task<IActionResult> GetAllBlogPosts()
@@ -51,11 +68,11 @@ namespace DDCode.API.Controllers
 
             var response = new List<BlogPostDTO>();
 
-            foreach(var blogpost in blogposts)
+            foreach (var blogpost in blogposts)
             {
                 response.Add(
-                                       new BlogPostDTO
-                                       {
+                    new BlogPostDTO
+                    {
                         Id = blogpost.Id,
                         Author = blogpost.Author,
                         Content = blogpost.Content,
@@ -65,8 +82,9 @@ namespace DDCode.API.Controllers
                         ShortDescription = blogpost.ShortDescription,
                         Title = blogpost.Title,
                         UrlHandle = blogpost.UrlHandle,
+
                     }
-                                                      );
+                );
             }
 
             return Ok(response);
