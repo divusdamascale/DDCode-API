@@ -6,8 +6,8 @@ namespace DDCode.API.Repositories.Interfaces
     {
         Task<BlogPost> CreateAsync(BlogPost blogPost);
         Task<IEnumerable<BlogPost>> GetAllAsync();
-        Task<BlogPost> GetAsync(int id);
-        Task UpdateAsync(BlogPost blogPost);
-        Task DeleteAsync(BlogPost blogPost);
+        Task<BlogPost> GetAsync(Guid id);
+        Task<BlogPost> UpdateAsync(BlogPost blogPost);
+        Task<BlogPost> DeleteAsync(BlogPost blogPost);
     }
 }

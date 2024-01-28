@@ -95,5 +95,40 @@ namespace DDCode.API.Controllers
 
             return Ok(response);
         }
+
+        //GET: /api/blogposts/{id}
+        [HttpGet]
+        [Route("{blogId:guid}")]
+        public async Task<IActionResult> GetBlogPostById([FromRoute]Guid blogId)
+        {
+            var blogpost = await _blogpostRepository.GetAsync(blogId);
+
+            if (blogpost is null)
+            {
+                return NotFound();
+            }
+
+            var response = new BlogPostDTO
+            {
+                Id = blogpost.Id,
+                Author = blogpost.Author,
+                Content = blogpost.Content,
+                FeaturedImageUrl = blogpost.FeaturedImageUrl,
+                IsVisible = blogpost.IsVisible,
+                PublishedDate = blogpost.PublishedDate,
+                ShortDescription = blogpost.ShortDescription,
+                Title = blogpost.Title,
+                UrlHandle = blogpost.UrlHandle,
+                Categories = blogpost.Categories.Select(x => new CategoryDTO
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    UrlHandle = x.UrlHandle
+                }).ToList()
+            };
+
+            return Ok(response);
+        }
+
     }
 }

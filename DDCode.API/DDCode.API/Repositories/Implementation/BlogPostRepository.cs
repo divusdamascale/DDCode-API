@@ -14,9 +14,11 @@ namespace DDCode.API.Repositories.Implementation
             return blogPost;
         }
 
-        public Task DeleteAsync(BlogPost blogPost)
+        public async Task<BlogPost> DeleteAsync(BlogPost blogPost)
         {
-            throw new NotImplementedException();
+            _context.BlogPosts.Remove(blogPost);
+            await _context.SaveChangesAsync();
+            return blogPost;
         }
 
         public async Task<IEnumerable<BlogPost>> GetAllAsync()
@@ -24,12 +26,12 @@ namespace DDCode.API.Repositories.Implementation
             return await _context.BlogPosts.Include(x => x.Categories).ToListAsync();
         }
 
-        public Task<BlogPost> GetAsync(int id)
+        public async Task<BlogPost> GetAsync(Guid id)
         {
-            throw new NotImplementedException();
+            return await _context.BlogPosts.Include(x => x.Categories).FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public Task UpdateAsync(BlogPost blogPost)
+        public Task<BlogPost> UpdateAsync(BlogPost blogPost)
         {
             throw new NotImplementedException();
         }
