@@ -31,6 +31,11 @@ namespace DDCode.API.Repositories.Implementation
             return await _context.BlogPosts.Include(x => x.Categories).FirstOrDefaultAsync(x => x.Id == id);
         }
 
+        public async Task<BlogPost> GetByUrlHandleAsync(string urlHandle)
+        {
+            return await _context.BlogPosts.Include(x => x.Categories).FirstOrDefaultAsync(x => x.UrlHandle == urlHandle);
+        }
+
         public async Task<BlogPost> UpdateAsync(BlogPost blogPost)
         {
             _context.BlogPosts.Update(blogPost);

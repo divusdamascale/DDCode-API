@@ -8,8 +8,122 @@ namespace DDCode.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BlogPostsController(IBlogPostRepository _blogpostRepository,ICategoryRepository _categoryRepository) : ControllerBase
+    public class BlogPostsController(
+        IBlogPostRepository _blogpostRepository,
+        ICategoryRepository _categoryRepository
+    ) : ControllerBase
     {
+        //GET: /api/blogposts
+        [HttpGet]
+        public async Task<IActionResult> GetAllBlogPosts()
+        {
+            var blogposts = await _blogpostRepository.GetAllAsync();
+
+            var response = new List<BlogPostDTO>();
+
+            foreach (var blogpost in blogposts)
+            {
+                response.Add(
+                    new BlogPostDTO
+                    {
+                        Id = blogpost.Id,
+                        Author = blogpost.Author,
+                        Content = blogpost.Content,
+                        FeaturedImageUrl = blogpost.FeaturedImageUrl,
+                        IsVisible = blogpost.IsVisible,
+                        PublishedDate = blogpost.PublishedDate,
+                        ShortDescription = blogpost.ShortDescription,
+                        Title = blogpost.Title,
+                        UrlHandle = blogpost.UrlHandle,
+                        Categories = blogpost
+                            .Categories.Select(x => new CategoryDTO
+                            {
+                                Id = x.Id,
+                                Name = x.Name,
+                                UrlHandle = x.UrlHandle
+                            })
+                            .ToList()
+                    }
+                );
+            }
+
+            return Ok(response);
+        }
+
+        //GET: /api/blogposts/{id}
+        [HttpGet]
+        [Route("{blogId:guid}")]
+        public async Task<IActionResult> GetBlogPostById([FromRoute] Guid blogId)
+        {
+            var blogpost = await _blogpostRepository.GetAsync(blogId);
+
+            if (blogpost is null)
+            {
+                return NotFound();
+            }
+
+            var response = new BlogPostDTO
+            {
+                Id = blogpost.Id,
+                Author = blogpost.Author,
+                Content = blogpost.Content,
+                FeaturedImageUrl = blogpost.FeaturedImageUrl,
+                IsVisible = blogpost.IsVisible,
+                PublishedDate = blogpost.PublishedDate,
+                ShortDescription = blogpost.ShortDescription,
+                Title = blogpost.Title,
+                UrlHandle = blogpost.UrlHandle,
+                Categories = blogpost
+                    .Categories.Select(x => new CategoryDTO
+                    {
+                        Id = x.Id,
+                        Name = x.Name,
+                        UrlHandle = x.UrlHandle
+                    })
+                    .ToList()
+            };
+
+            return Ok(response);
+        }
+
+
+        //GET: /api/blogposts/{urlHandle}
+
+        [HttpGet]
+        [Route("{urlHandle}")]
+        public async Task<IActionResult> GetBlogPostByUrlHandle([FromRoute] string urlHandle)
+        {
+            var blogpost = await _blogpostRepository.GetByUrlHandleAsync(urlHandle);
+
+            if (blogpost is null)
+            {
+                return NotFound();
+            }
+
+            var response = new BlogPostDTO
+            {
+                Id = blogpost.Id,
+                Author = blogpost.Author,
+                Content = blogpost.Content,
+                FeaturedImageUrl = blogpost.FeaturedImageUrl,
+                IsVisible = blogpost.IsVisible,
+                PublishedDate = blogpost.PublishedDate,
+                ShortDescription = blogpost.ShortDescription,
+                Title = blogpost.Title,
+                UrlHandle = blogpost.UrlHandle,
+                Categories = blogpost
+                    .Categories.Select(x => new CategoryDTO
+                    {
+                        Id = x.Id,
+                        Name = x.Name,
+                        UrlHandle = x.UrlHandle
+                    })
+                    .ToList()
+            };
+
+            return Ok(response);
+        }
+
         //POST : api/blogposts
         [HttpPost]
         public async Task<IActionResult> CreateBlogPost([FromBody] CreateBlogPostRequestDTO request)
@@ -49,91 +163,26 @@ namespace DDCode.API.Controllers
                 ShortDescription = blogpost.ShortDescription,
                 Title = blogpost.Title,
                 UrlHandle = blogpost.UrlHandle,
-                Categories = blogpost.Categories.Select(x => new CategoryDTO
-                {
-                    Id = x.Id,
-                    Name = x.Name,
-                    UrlHandle = x.UrlHandle
-                }).ToList()
-            };
-
-            return Ok(response);
-        }
-
-        //GET: /api/blogposts
-        [HttpGet]
-        public async Task<IActionResult> GetAllBlogPosts()
-        {
-            var blogposts = await _blogpostRepository.GetAllAsync();
-
-            var response = new List<BlogPostDTO>();
-
-            foreach (var blogpost in blogposts)
-            {
-                response.Add(
-                    new BlogPostDTO
+                Categories = blogpost
+                    .Categories.Select(x => new CategoryDTO
                     {
-                        Id = blogpost.Id,
-                        Author = blogpost.Author,
-                        Content = blogpost.Content,
-                        FeaturedImageUrl = blogpost.FeaturedImageUrl,
-                        IsVisible = blogpost.IsVisible,
-                        PublishedDate = blogpost.PublishedDate,
-                        ShortDescription = blogpost.ShortDescription,
-                        Title = blogpost.Title,
-                        UrlHandle = blogpost.UrlHandle,
-                        Categories = blogpost.Categories.Select(x => new CategoryDTO
-                        {
-                            Id = x.Id,
-                            Name = x.Name,
-                            UrlHandle = x.UrlHandle
-                        }).ToList()
-
-                    }
-                );
-            }
-
-            return Ok(response);
-        }
-
-        //GET: /api/blogposts/{id}
-        [HttpGet]
-        [Route("{blogId:guid}")]
-        public async Task<IActionResult> GetBlogPostById([FromRoute]Guid blogId)
-        {
-            var blogpost = await _blogpostRepository.GetAsync(blogId);
-
-            if (blogpost is null)
-            {
-                return NotFound();
-            }
-
-            var response = new BlogPostDTO
-            {
-                Id = blogpost.Id,
-                Author = blogpost.Author,
-                Content = blogpost.Content,
-                FeaturedImageUrl = blogpost.FeaturedImageUrl,
-                IsVisible = blogpost.IsVisible,
-                PublishedDate = blogpost.PublishedDate,
-                ShortDescription = blogpost.ShortDescription,
-                Title = blogpost.Title,
-                UrlHandle = blogpost.UrlHandle,
-                Categories = blogpost.Categories.Select(x => new CategoryDTO
-                {
-                    Id = x.Id,
-                    Name = x.Name,
-                    UrlHandle = x.UrlHandle
-                }).ToList()
+                        Id = x.Id,
+                        Name = x.Name,
+                        UrlHandle = x.UrlHandle
+                    })
+                    .ToList()
             };
 
             return Ok(response);
         }
 
-        //PUT: /api/blogposts/{id}  
+        //PUT: /api/blogposts/{id}
         [HttpPut]
         [Route("{blogId:guid}")]
-        public async Task<IActionResult> EditBlogPost([FromRoute]Guid blogId,[FromBody] UpdateBlogPostRequestDTO request)
+        public async Task<IActionResult> EditBlogPost(
+            [FromRoute] Guid blogId,
+            [FromBody] UpdateBlogPostRequestDTO request
+        )
         {
             var blogpost = await _blogpostRepository.GetAsync(blogId);
 
@@ -175,12 +224,14 @@ namespace DDCode.API.Controllers
                 ShortDescription = blogpost.ShortDescription,
                 Title = blogpost.Title,
                 UrlHandle = blogpost.UrlHandle,
-                Categories = blogpost.Categories.Select(x => new CategoryDTO
-                {
-                    Id = x.Id,
-                    Name = x.Name,
-                    UrlHandle = x.UrlHandle
-                }).ToList()
+                Categories = blogpost
+                    .Categories.Select(x => new CategoryDTO
+                    {
+                        Id = x.Id,
+                        Name = x.Name,
+                        UrlHandle = x.UrlHandle
+                    })
+                    .ToList()
             };
 
             return Ok(response);
@@ -189,7 +240,7 @@ namespace DDCode.API.Controllers
         //DELETE: /api/blogposts/{id}
         [HttpDelete]
         [Route("{blogId:guid}")]
-        public async Task<IActionResult> DeleteBlogPost([FromRoute]Guid blogId)
+        public async Task<IActionResult> DeleteBlogPost([FromRoute] Guid blogId)
         {
             var blogpost = await _blogpostRepository.GetAsync(blogId);
 
@@ -202,6 +253,5 @@ namespace DDCode.API.Controllers
 
             return Ok();
         }
-
     }
 }
