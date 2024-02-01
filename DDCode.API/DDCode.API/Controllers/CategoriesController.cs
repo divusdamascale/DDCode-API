@@ -2,6 +2,7 @@
 using DDCode.API.Models.Domain;
 using DDCode.API.Models.DTO;
 using DDCode.API.Repositories.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,16 +13,15 @@ namespace DDCode.API.Controllers
     [ApiController]
     public class CategoriesController(ICategoryRepository _categoryRepository) : ControllerBase
     {
-        
-
         // POST: api/Categories
         [HttpPost]
+        [Authorize(Roles = "Writer")]
         public async Task<IActionResult> CreateCategory([FromBody] CreateCategoryRequestDTO request)
         {
             //Map DTO to Domain Model
             //TODO: create service for categories
             //TODO: create mapping method
-            var category = new Category { Name = request.Name,UrlHandle = request.UrlHandle };
+            var category = new Category { Name = request.Name, UrlHandle = request.UrlHandle };
             //TODO:handle exceptions
 
             await _categoryRepository.CreateAsync(category);
@@ -44,7 +44,7 @@ namespace DDCode.API.Controllers
 
             var response = new List<CategoryDTO>();
 
-            foreach(var category in categories)
+            foreach (var category in categories)
             {
                 response.Add(
                     new CategoryDTO
@@ -66,7 +66,7 @@ namespace DDCode.API.Controllers
         {
             var category = await _categoryRepository.GetByIdAsync(categoryId);
 
-            if(category is null)
+            if (category is null)
             {
                 return NotFound();
             }
@@ -83,11 +83,15 @@ namespace DDCode.API.Controllers
         //PUT: /api/Categories/{id}
         [HttpPut]
         [Route("{categoryId:Guid}")]
-        public async Task<IActionResult> EditCategory([FromRoute] Guid categoryId,[FromBody] UpdateCategoryRequestDTO request)
+        [Authorize(Roles = "Writer")]
+        public async Task<IActionResult> EditCategory(
+            [FromRoute] Guid categoryId,
+            [FromBody] UpdateCategoryRequestDTO request
+        )
         {
             var category = await _categoryRepository.GetByIdAsync(categoryId);
 
-            if(category is null)
+            if (category is null)
             {
                 return NotFound();
             }
@@ -110,11 +114,12 @@ namespace DDCode.API.Controllers
         //DELETE: /api/Categories/{id}
         [HttpDelete]
         [Route("{categoryId:Guid}")]
+        [Authorize(Roles = "Writer")]
         public async Task<IActionResult> DeleteCategory([FromRoute] Guid categoryId)
         {
             var category = await _categoryRepository.GetByIdAsync(categoryId);
 
-            if(category is null)
+            if (category is null)
             {
                 return NotFound();
             }

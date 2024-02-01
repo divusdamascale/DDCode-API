@@ -1,6 +1,7 @@
 ﻿using DDCode.API.Models.Domain;
 using DDCode.API.Models.DTO;
 using DDCode.API.Repositories.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,6 +13,7 @@ namespace DDCode.API.Controllers
     {
         // POST: api/Images
         [HttpPost]
+
         public async Task<IActionResult> UploadImage(
             [FromForm] IFormFile file,
             [FromForm] string fileName,

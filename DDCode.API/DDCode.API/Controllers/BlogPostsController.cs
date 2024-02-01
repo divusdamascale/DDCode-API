@@ -1,6 +1,7 @@
 ﻿using DDCode.API.Models.Domain;
 using DDCode.API.Models.DTO;
 using DDCode.API.Repositories.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -86,7 +87,6 @@ namespace DDCode.API.Controllers
             return Ok(response);
         }
 
-
         //GET: /api/blogposts/{urlHandle}
 
         [HttpGet]
@@ -126,6 +126,7 @@ namespace DDCode.API.Controllers
 
         //POST : api/blogposts
         [HttpPost]
+        [Authorize(Roles = "Writer")]
         public async Task<IActionResult> CreateBlogPost([FromBody] CreateBlogPostRequestDTO request)
         {
             var blogpost = new BlogPost
@@ -179,6 +180,7 @@ namespace DDCode.API.Controllers
         //PUT: /api/blogposts/{id}
         [HttpPut]
         [Route("{blogId:guid}")]
+        [Authorize(Roles = "Writer")]
         public async Task<IActionResult> EditBlogPost(
             [FromRoute] Guid blogId,
             [FromBody] UpdateBlogPostRequestDTO request
@@ -240,6 +242,7 @@ namespace DDCode.API.Controllers
         //DELETE: /api/blogposts/{id}
         [HttpDelete]
         [Route("{blogId:guid}")]
+        [Authorize(Roles = "Writer")]
         public async Task<IActionResult> DeleteBlogPost([FromRoute] Guid blogId)
         {
             var blogpost = await _blogpostRepository.GetAsync(blogId);
